@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mate
+  datasource:
+    url: jdbc:mysql://localhost:3306/database?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: user
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.show_sql: false
+      hibernate.use_sql_comments: true
+      hibernate.format_sql: true
+    open-in-view: false
+  mvc:
+    log-resolved-exception: false
+    log-request-details: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: false
+  paths-to-match: /**
+
+logging:
+  level:
+    org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver: ERROR
+
+jwt:
+  privateKey: "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+  publicKey: "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"

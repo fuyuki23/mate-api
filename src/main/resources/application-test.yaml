@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mate-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/mate?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: mate
+    password: mate1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.show_sql: false
+      hibernate.use_sql_comments: true
+      hibernate.format_sql: true
+    open-in-view: false

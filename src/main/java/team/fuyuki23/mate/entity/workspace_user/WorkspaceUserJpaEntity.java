@@ -1,12 +1,22 @@
 package team.fuyuki23.mate.entity.workspace_user;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import team.fuyuki23.mate.entity.user.UserJpaEntity;
 import team.fuyuki23.mate.entity.workspace.WorkspaceJpaEntity;
-
-import java.time.LocalDateTime;
 
 @Table(name = "workspace_user")
 @Entity
@@ -24,7 +34,7 @@ public class WorkspaceUserJpaEntity {
     private int role;
 
     @CreatedDate
-    @Column(name = "create_at", columnDefinition = "timestamp", nullable = false)
+    @Column(name = "create_at", columnDefinition = "timestamp", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
@@ -33,7 +43,7 @@ public class WorkspaceUserJpaEntity {
     @ToString.Exclude
     private WorkspaceJpaEntity workspace;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     @ToString.Exclude
