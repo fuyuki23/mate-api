@@ -19,7 +19,7 @@ public class FindMembersByWorkspaceInputPort implements FindMembersByWorkspaceUs
   private final FindMembersByWorkspaceIdOutputPort findMembersByWorkspaceIdOutputPort;
 
   @Override
-  public Result findMembersByWorkspace(Command command) throws ApiException {
+  public Result findMembersByWorkspace(Command command) {
     Workspace workspace = findWorkspaceBySlugOutputPort.findWorkspaceBySlug(command.slug())
         .orElseThrow(() -> new ApiException(MemberError.WORKSPACE_NOT_FOUND));
 

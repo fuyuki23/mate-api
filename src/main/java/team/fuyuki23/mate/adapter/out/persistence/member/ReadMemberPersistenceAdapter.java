@@ -32,7 +32,7 @@ public class ReadMemberPersistenceAdapter implements FindWorkspaceBySlugOutputPo
 
   @Override
   public List<Member> findMembersByWorkspaceId(UUID workspaceId) {
-    List<WorkspaceUserJpaEntity> workspaceUsers = workspaceUserJpaRepository.findByWorkspaceUserIdWorkspaceId(
+    List<WorkspaceUserJpaEntity> workspaceUsers = workspaceUserJpaRepository.findByWorkspaceId(
         workspaceId);
 
     return workspaceUsers.stream().map(workspaceUserMapper::toDomain).toList();

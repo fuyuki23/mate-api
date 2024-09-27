@@ -1,10 +1,8 @@
 package team.fuyuki23.mate.application.user.usecase;
 
-import team.fuyuki23.mate.common.exception.ApiException;
-
 public interface RegisterUserUseCase {
 
-    Result register(Command command) throws ApiException;
+  Result register(Command command);
 
     record Command(
             String email,
