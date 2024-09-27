@@ -22,7 +22,7 @@ public class LoginUserInputPort implements LoginUserUseCase {
     private final UserMapper userMapper;
 
     @Override
-    public Result login(Command command) throws ApiException {
+    public Result login(Command command) {
         Account account = findAccountByEmailOutputPort.findAccountByEmail(command.email());
         if (account == null) {
             throw new ApiException(DefaultError.BAD_REQUEST);

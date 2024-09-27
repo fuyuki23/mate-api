@@ -3,11 +3,11 @@ package team.fuyuki23.mate.application.workspace.usecase;
 import team.fuyuki23.mate.domain.User;
 import team.fuyuki23.mate.domain.Workspace;
 
-public interface CreateWorkspaceUseCase {
+public interface FindWorkspaceBySlugUseCase {
 
-  Result create(Command command);
+  Result findWorkspaceBySlug(Command command);
 
-  record Command(String name, String slug, User requester) {
+  record Command(String slug, User user) {
 
   }
 

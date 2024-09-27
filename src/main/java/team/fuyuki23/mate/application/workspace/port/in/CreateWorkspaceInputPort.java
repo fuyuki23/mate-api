@@ -21,7 +21,7 @@ public class CreateWorkspaceInputPort implements CreateWorkspaceUseCase {
   private final int DEFAULT_WORKSPACE_SIZE = 10;
 
   @Override
-  public Result create(Command command) throws ApiException {
+  public Result create(Command command) {
     Optional<Workspace> maybeWorkspace = findWorkspaceByNameOrSlugOutputPort.findWorkspaceByNameOrSlug(
         command.name(), command.slug());
     if (maybeWorkspace.isPresent()) {

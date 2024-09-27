@@ -1,12 +1,11 @@
 package team.fuyuki23.mate.common.exception;
 
+import java.util.Map;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-
 @Getter
-public class ApiException extends Exception {
+public class ApiException extends RuntimeException {
 
   private final int status;
   private final String code;

@@ -20,7 +20,7 @@ public class RegisterUserInputPort implements RegisterUserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result register(Command command) throws ApiException {
+    public Result register(Command command) {
         User existingUser = findUserByEmailOutputPort.findUserByEmail(command.email());
         if (existingUser != null) {
             throw new ApiException(UserError.ALREADY_EXISTS);

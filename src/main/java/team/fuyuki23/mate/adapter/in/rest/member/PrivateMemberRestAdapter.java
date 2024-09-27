@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team.fuyuki23.mate.application.member.usecase.FindMembersByWorkspaceUseCase;
-import team.fuyuki23.mate.common.exception.ApiException;
 import team.fuyuki23.mate.domain.User;
 
 @RestController
@@ -24,7 +23,7 @@ public class PrivateMemberRestAdapter {
   public ResponseEntity<?> findMembersByWorkspace(
       @PathVariable String slug,
       @AuthenticationPrincipal User user
-  ) throws ApiException {
+  ) {
     return ResponseEntity.ok().body(
         findMembersByWorkspaceUseCase.findMembersByWorkspace(
             new FindMembersByWorkspaceUseCase.Command(

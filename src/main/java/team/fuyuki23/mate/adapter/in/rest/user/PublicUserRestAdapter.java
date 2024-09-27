@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import team.fuyuki23.mate.adapter.in.rest.user.dto.PublicUserRequest;
 import team.fuyuki23.mate.application.user.usecase.LoginUserUseCase;
 import team.fuyuki23.mate.application.user.usecase.RegisterUserUseCase;
-import team.fuyuki23.mate.common.exception.ApiException;
 
 @RestController
 @RequestMapping("/users")
@@ -21,12 +20,12 @@ public class PublicUserRestAdapter {
   private final RegisterUserUseCase registerUserUseCase;
 
   @PostMapping("/login")
-  public ResponseEntity<?> Login(@Valid @RequestBody PublicUserRequest.LoginDto payload) throws ApiException {
+  public ResponseEntity<?> Login(@Valid @RequestBody PublicUserRequest.LoginDto payload) {
     return ResponseEntity.ok().body(loginUserUseCase.login(payload.toCommand()));
   }
 
   @PostMapping("/register")
-  public ResponseEntity<?> Register(@Valid @RequestBody PublicUserRequest.RegisterDto payload) throws ApiException {
+  public ResponseEntity<?> Register(@Valid @RequestBody PublicUserRequest.RegisterDto payload) {
     return ResponseEntity.ok().body(registerUserUseCase.register(payload.toCommand()));
   }
 
