@@ -10,4 +10,6 @@ public interface WorkspaceJpaRepository extends JpaRepository<WorkspaceJpaEntity
 
     Optional<WorkspaceJpaEntity> findByNameOrSlug(String name, String slug);
 
+    Optional<WorkspaceJpaEntity> findBySlug(String slug);
+
 }
