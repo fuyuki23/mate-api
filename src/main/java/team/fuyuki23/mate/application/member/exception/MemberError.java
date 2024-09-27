@@ -6,6 +6,8 @@ import team.fuyuki23.mate.common.exception.MateError;
 
 @Getter
 public enum MemberError implements MateError {
+  WORKSPACE_NOT_FOUND(HttpStatus.NOT_FOUND, "api.member.workspace_not_found",
+      "Workspace not found"),
   ALREADY_EXISTS(HttpStatus.CONFLICT, "api.member.already_exists", "Member already exists"),
   NOT_FOUND(HttpStatus.NOT_FOUND, "api.member.not_found", "Member not found"),
   ;

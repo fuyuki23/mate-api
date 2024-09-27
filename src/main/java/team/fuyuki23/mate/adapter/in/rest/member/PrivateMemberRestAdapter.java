@@ -25,14 +25,14 @@ public class PrivateMemberRestAdapter {
       @PathVariable String slug,
       @AuthenticationPrincipal User user
   ) throws ApiException {
-    // TODO: return usecase result
-    findMembersByWorkspaceUseCase.findMembersByWorkspace(
-        new FindMembersByWorkspaceUseCase.Command(
-            slug,
-            user
-        )
+    return ResponseEntity.ok().body(
+        findMembersByWorkspaceUseCase.findMembersByWorkspace(
+            new FindMembersByWorkspaceUseCase.Command(
+                slug,
+                user
+            )
+        ).members()
     );
-    return ResponseEntity.ok().build();
   }
 
 }
