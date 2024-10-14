@@ -3,15 +3,6 @@ package team.fuyuki23.mate.common.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.springframework.stereotype.Component;
-import team.fuyuki23.mate.domain.User;
-import team.fuyuki23.mate.domain.vo.Tokens;
-
 import java.io.StringReader;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -20,7 +11,14 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.springframework.stereotype.Component;
+import team.fuyuki23.mate.domain.User;
+import team.fuyuki23.mate.domain.vo.Tokens;
 
 @Slf4j
 @Component
@@ -72,12 +70,12 @@ public class JwtService {
                 .compact();
     }
 
-    public UUID parseAccessToken(String token) {
+    public String parseAccessToken(String token) {
         return parseAccessToken(token, false);
     }
 
-    public UUID parseAccessToken(String token, boolean ignoreError) {
-        String userId;
+    public String parseAccessToken(String token, boolean ignoreError) {
+        String email;
         try {
             var jwt = Jwts.parser()
                     .verifyWith(this.publicKey)
@@ -89,25 +87,25 @@ public class JwtService {
                 return null;
             }
 
-            userId = (String) jwt.getPayload().get("userId");
+            email = (String) jwt.getPayload().get("email");
         } catch (ExpiredJwtException e) {
             if (ignoreError) {
-                userId = (String) e.getClaims().get("userId");
+                email = (String) e.getClaims().get("email");
             } else {
                 throw e;
             }
         }
 
-        if (userId == null) {
-            log.info("invalid access token. userId not found");
+        if (email == null) {
+            log.info("invalid access token. email not found");
             return null;
         }
 
-        return UUID.fromString(userId);
+        return email;
     }
 
-    public UUID parseRefreshToken(String token) {
-        String userId;
+    public String parseRefreshToken(String token) {
+        String email;
         var jwt = Jwts.parser()
                 .verifyWith(this.publicKey)
                 .build()
@@ -118,19 +116,19 @@ public class JwtService {
             return null;
         }
 
-        userId = (String) jwt.getPayload().get("userId");
-        if (userId == null) {
+        email = (String) jwt.getPayload().get("email");
+        if (email == null) {
             log.info("invalid refresh token. userId not found");
             return null;
         }
 
-        return UUID.fromString(userId);
+        return email;
     }
 
     private Map<String, String> makeClaims(String type, User user) {
         Map<String, String> claims = new HashMap<>();
         claims.put("type", type);
-        claims.put("userId", user.id().toString());
+        claims.put("email", user.email());
         return claims;
     }
 
