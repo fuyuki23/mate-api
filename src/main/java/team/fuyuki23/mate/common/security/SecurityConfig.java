@@ -1,10 +1,10 @@
 package team.fuyuki23.mate.common.security;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,12 +17,23 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@RequiredArgsConstructor
 public class SecurityConfig {
 
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final AuthenticationManagerBuilder authenticationManagerBuilder;
+  private final JwtAuthenticationProvider jwtAuthenticationProvider;
+
+  SecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler,
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      AuthenticationManagerBuilder authenticationManagerBuilder,
+      JwtAuthenticationProvider jwtAuthenticationProvider) {
+    this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    this.authenticationManagerBuilder = authenticationManagerBuilder;
+    this.authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
+    this.jwtAuthenticationProvider = jwtAuthenticationProvider;
+  }
 
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
@@ -51,7 +62,8 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
         )
         .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild()),
+            UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
             httpSecurityExceptionHandlingConfigurer
                 .accessDeniedHandler(jwtAccessDeniedHandler)
