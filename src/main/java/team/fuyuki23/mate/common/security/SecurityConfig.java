@@ -4,35 +4,35 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import team.fuyuki23.mate.common.jwt.JwtService;
 
 @Configuration
 public class SecurityConfig {
 
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
   SecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler,
       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-      AuthenticationManagerBuilder authenticationManagerBuilder,
-      JwtAuthenticationProvider jwtAuthenticationProvider) {
+      JwtService jwtService,
+      UserDetailsService userDetailsService) {
     this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-    this.authenticationManagerBuilder = authenticationManagerBuilder;
-    this.authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
-    this.jwtAuthenticationProvider = jwtAuthenticationProvider;
+    this.jwtAuthenticationProvider = new JwtAuthenticationProvider(jwtService, userDetailsService);
   }
 
   public CorsConfigurationSource corsConfigurationSource() {
@@ -49,7 +49,8 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http,
+      AuthenticationManager authenticationManager) throws Exception {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
@@ -62,8 +63,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
         )
         .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterAfter(new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild()),
-            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), LogoutFilter.class)
         .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
             httpSecurityExceptionHandlingConfigurer
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -71,6 +71,15 @@ public class SecurityConfig {
         );
 
     return http.build();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(
+        AuthenticationManagerBuilder.class);
+    // TODO: JWT 확인 후 접속 할 Workspace 를 확인하는 AuthenticationProvider 도 만들 수 있을듯?
+    authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
+    return authenticationManagerBuilder.build();
   }
 
   @Bean
