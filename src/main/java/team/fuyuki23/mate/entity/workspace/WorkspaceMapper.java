@@ -6,13 +6,13 @@ import team.fuyuki23.mate.domain.Workspace;
 @Component
 public class WorkspaceMapper {
 
-    public Workspace toDomain(WorkspaceJpaEntity workspaceJpaEntity) {
-        return new Workspace(
-                workspaceJpaEntity.getId(),
-                workspaceJpaEntity.getName(),
-                workspaceJpaEntity.getSlug(),
-                workspaceJpaEntity.getSize()
-        );
-    }
+  public Workspace toDomain(WorkspaceJpaEntity workspaceJpaEntity) {
+    return new Workspace(
+        workspaceJpaEntity.getId(),
+        workspaceJpaEntity.getName(),
+        workspaceJpaEntity.getSlug(),
+        workspaceJpaEntity.getSize()
+    );
+  }
 
 }

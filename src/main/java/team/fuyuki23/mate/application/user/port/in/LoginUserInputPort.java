@@ -16,23 +16,23 @@ import team.fuyuki23.mate.entity.user.UserMapper;
 @RequiredArgsConstructor
 public class LoginUserInputPort implements LoginUserUseCase {
 
-    private final FindAccountByEmailOutputPort findAccountByEmailOutputPort;
-    private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+  private final FindAccountByEmailOutputPort findAccountByEmailOutputPort;
+  private final JwtService jwtService;
+  private final PasswordEncoder passwordEncoder;
+  private final UserMapper userMapper;
 
-    @Override
-    public Result login(Command command) {
-        Account account = findAccountByEmailOutputPort.findAccountByEmail(command.email());
-        if (account == null) {
-            throw new ApiException(DefaultError.BAD_REQUEST);
-        }
-
-        if (!passwordEncoder.matches(command.password(), account.password())) {
-            throw new ApiException(DefaultError.BAD_REQUEST);
-        }
-
-        User user = userMapper.toUser(account);
-        return new Result(user, jwtService.generateTokens(user));
+  @Override
+  public Result login(Command command) {
+    Account account = findAccountByEmailOutputPort.findAccountByEmail(command.email());
+    if (account == null) {
+      throw new ApiException(DefaultError.BAD_REQUEST);
     }
+
+    if (!passwordEncoder.matches(command.password(), account.password())) {
+      throw new ApiException(DefaultError.BAD_REQUEST);
+    }
+
+    User user = userMapper.toUser(account);
+    return new Result(user, jwtService.generateTokens(user));
+  }
 }

@@ -10,7 +10,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
   @Serial
   private static final long serialVersionUID = 2505764675492310357L;
-  
+
   private String _token;
   @Getter
   private Object principal;

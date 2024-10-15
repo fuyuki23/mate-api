@@ -8,9 +8,11 @@ public interface LoginUserUseCase {
   Result login(Command command);
 
   record Command(String email, String password) {
+
   }
 
-    record Result(User user, Tokens tokens) {
+  record Result(User user, Tokens tokens) {
+
   }
 
 }

@@ -20,8 +20,8 @@ public class ApiException extends RuntimeException {
 
   public ResponseEntity<?> toResponse() {
     return ResponseEntity.status(this.status).body(Map.of(
-            "code", this.code,
-            "message", this.message
+        "code", this.code,
+        "message", this.message
     ));
   }
 

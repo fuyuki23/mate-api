@@ -11,8 +11,7 @@ public enum DefaultError implements MateError {
   NOT_FOUND(404, "api.common.not_found", "Not Found"),
   METHOD_NOT_ALLOWED(405, "api.common.method_not_allowed", "Method Not Allowed"),
   CONFLICT(409, "api.common.conflict", "Conflict"),
-  INTERNAL_SERVER_ERROR(500, "api.common.internal_server_error", "Internal Server Error")
-  ;
+  INTERNAL_SERVER_ERROR(500, "api.common.internal_server_error", "Internal Server Error");
 
   private final int status;
   private final String code;

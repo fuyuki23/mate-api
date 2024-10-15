@@ -15,31 +15,31 @@ import team.fuyuki23.mate.domain.User;
 @RequiredArgsConstructor
 public class RegisterUserInputPort implements RegisterUserUseCase {
 
-    private final FindUserByEmailOutputPort findUserByEmailOutputPort;
-    private final WriteAccountOutputPort writeAccountOutputPort;
-    private final PasswordEncoder passwordEncoder;
+  private final FindUserByEmailOutputPort findUserByEmailOutputPort;
+  private final WriteAccountOutputPort writeAccountOutputPort;
+  private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public Result register(Command command) {
-        User existingUser = findUserByEmailOutputPort.findUserByEmail(command.email());
-        if (existingUser != null) {
-            throw new ApiException(UserError.ALREADY_EXISTS);
-        }
-
-        String password = passwordEncoder.encode(command.password());
-        Account savedAccount = writeAccountOutputPort.writeAccount(
-                new Account(
-                        null,
-                        command.email(),
-                        password,
-                        command.firstName(),
-                        command.lastName()
-                )
-        );
-
-        return new Result(
-                savedAccount != null
-        );
+  @Override
+  public Result register(Command command) {
+    User existingUser = findUserByEmailOutputPort.findUserByEmail(command.email());
+    if (existingUser != null) {
+      throw new ApiException(UserError.ALREADY_EXISTS);
     }
+
+    String password = passwordEncoder.encode(command.password());
+    Account savedAccount = writeAccountOutputPort.writeAccount(
+        new Account(
+            null,
+            command.email(),
+            password,
+            command.firstName(),
+            command.lastName()
+        )
+    );
+
+    return new Result(
+        savedAccount != null
+    );
+  }
 
 }

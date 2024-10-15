@@ -19,14 +19,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+        AuthenticationException authException) {
 //        log.info(String.format("%s %s %s",
 //            request != null ? request.getRequestURL().toString() : "Unknown URL",
 //            "access denied",
 //            authException != null ? authException.getMessage() : "No message"));
 
         try {
-            String responseBody = objectMapper.writeValueAsString(DefaultError.UNAUTHORIZED.toMap());
+            String responseBody = objectMapper.writeValueAsString(
+                DefaultError.UNAUTHORIZED.toMap());
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(DefaultError.UNAUTHORIZED.getStatus());

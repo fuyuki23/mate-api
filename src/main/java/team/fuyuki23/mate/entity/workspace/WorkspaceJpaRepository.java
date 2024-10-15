@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkspaceJpaRepository extends JpaRepository<WorkspaceJpaEntity, UUID> {
 
-    Optional<WorkspaceJpaEntity> findByNameOrSlug(String name, String slug);
+  Optional<WorkspaceJpaEntity> findByNameOrSlug(String name, String slug);
 
-    Optional<WorkspaceJpaEntity> findBySlug(String slug);
+  Optional<WorkspaceJpaEntity> findBySlug(String slug);
 
 }

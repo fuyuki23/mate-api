@@ -17,7 +17,7 @@ public class PrivateUserRestAdapter {
 
     @GetMapping("/me")
     public ResponseEntity<?> findMyInfo(
-            @AuthenticationPrincipal User user
+        @AuthenticationPrincipal User user
     ) {
         return ResponseEntity.ok().body(user);
     }

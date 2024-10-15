@@ -12,22 +12,22 @@ import team.fuyuki23.mate.entity.user.UserMapper;
 @RequiredArgsConstructor
 public class WriteAccountPersistenceAdapter implements WriteAccountOutputPort {
 
-    private final UserJpaRepository userJpaRepository;
-    private final UserMapper userMapper;
+  private final UserJpaRepository userJpaRepository;
+  private final UserMapper userMapper;
 
-    @Override
-    public Account writeAccount(Account account) {
-        UserJpaEntity savedAccount = userJpaRepository.save(
-                UserJpaEntity
-                        .builder()
-                        .email(account.email())
-                        .password(account.password())
-                        .firstName(account.firstName())
-                        .lastName(account.lastName())
-                        .build()
-        );
+  @Override
+  public Account writeAccount(Account account) {
+    UserJpaEntity savedAccount = userJpaRepository.save(
+        UserJpaEntity
+            .builder()
+            .email(account.email())
+            .password(account.password())
+            .firstName(account.firstName())
+            .lastName(account.lastName())
+            .build()
+    );
 
-        return userMapper.toAccount(savedAccount);
-    }
+    return userMapper.toAccount(savedAccount);
+  }
 
 }

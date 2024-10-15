@@ -27,26 +27,26 @@ import team.fuyuki23.mate.entity.workspace.WorkspaceJpaEntity;
 @AllArgsConstructor
 public class WorkspaceUserJpaEntity {
 
-    @EmbeddedId
-    private WorkspaceUserId workspaceUserId;
+  @EmbeddedId
+  private WorkspaceUserId workspaceUserId;
 
-    @Column(name = "role", columnDefinition = "smallint", nullable = false)
-    private int role;
+  @Column(name = "role", columnDefinition = "smallint", nullable = false)
+  private int role;
 
-    @CreatedDate
-    @Column(name = "create_at", columnDefinition = "timestamp", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+  @CreatedDate
+  @Column(name = "create_at", columnDefinition = "timestamp", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
 
-    @ManyToOne
-    @MapsId("workspaceId")
-    @JoinColumn(name = "workspace_id")
-    @ToString.Exclude
-    private WorkspaceJpaEntity workspace;
+  @ManyToOne
+  @MapsId("workspaceId")
+  @JoinColumn(name = "workspace_id")
+  @ToString.Exclude
+  private WorkspaceJpaEntity workspace;
 
-    @ManyToOne()
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private UserJpaEntity user;
+  @ManyToOne()
+  @MapsId("userId")
+  @JoinColumn(name = "user_id")
+  @ToString.Exclude
+  private UserJpaEntity user;
 
 }

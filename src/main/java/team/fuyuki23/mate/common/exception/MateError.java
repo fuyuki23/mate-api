@@ -5,7 +5,9 @@ import java.util.Map;
 public interface MateError {
 
   int getStatus();
+
   String getCode();
+
   String getMessage();
 
   default Map<String, String> toMap() {

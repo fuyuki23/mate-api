@@ -10,15 +10,15 @@ import team.fuyuki23.mate.entity.workspace.WorkspaceMapper;
 @RequiredArgsConstructor
 public class WorkspaceUserMapper {
 
-    private final WorkspaceMapper workspaceMapper;
-    private final UserMapper userMapper;
+  private final WorkspaceMapper workspaceMapper;
+  private final UserMapper userMapper;
 
-    public Member toDomain(WorkspaceUserJpaEntity workspaceUserJpaEntity) {
-        return new Member(
-                workspaceMapper.toDomain(workspaceUserJpaEntity.getWorkspace()),
-                userMapper.toDomain(workspaceUserJpaEntity.getUser()),
-                workspaceUserJpaEntity.getRole()
-        );
-    }
+  public Member toDomain(WorkspaceUserJpaEntity workspaceUserJpaEntity) {
+    return new Member(
+        workspaceMapper.toDomain(workspaceUserJpaEntity.getWorkspace()),
+        userMapper.toDomain(workspaceUserJpaEntity.getUser()),
+        workspaceUserJpaEntity.getRole()
+    );
+  }
 
 }

@@ -9,10 +9,12 @@ public interface FindMembersByWorkspaceUseCase {
   Result findMembersByWorkspace(Command command);
 
   record Command(String slug, User user) {
+
   }
 
   // FIXME: Please change User class to Member class
   record Result(List<Member> members) {
+
   }
 
 }

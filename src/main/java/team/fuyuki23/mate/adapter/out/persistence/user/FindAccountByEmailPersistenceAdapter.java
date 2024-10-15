@@ -17,7 +17,7 @@ public class FindAccountByEmailPersistenceAdapter implements FindAccountByEmailO
     @Override
     public Account findAccountByEmail(String email) {
         return userJpaRepository.findByEmail(email)
-                .map(userMapper::toAccount)
-                .orElse(null);
+            .map(userMapper::toAccount)
+            .orElse(null);
     }
 }

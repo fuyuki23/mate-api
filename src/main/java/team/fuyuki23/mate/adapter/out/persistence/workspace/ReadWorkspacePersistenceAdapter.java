@@ -20,29 +20,29 @@ public class ReadWorkspacePersistenceAdapter implements FindWorkspacesByUserIdOu
     FindWorkspaceByNameOrSlugOutputPort,
     FindWorkspaceBySlugAndUserIdOutputPort {
 
-    private final WorkspaceUserJpaRepository workspaceUserJpaRepository;
-    private final WorkspaceJpaRepository workspaceJpaRepository;
-    private final WorkspaceMapper workspaceMapper;
+  private final WorkspaceUserJpaRepository workspaceUserJpaRepository;
+  private final WorkspaceJpaRepository workspaceJpaRepository;
+  private final WorkspaceMapper workspaceMapper;
 
-    @Override
-    public List<Workspace> findWorkspacesByUserId(UUID userId) {
-        return workspaceUserJpaRepository.findByUserId(userId)
-                .stream()
-                .map(WorkspaceUserJpaEntity::getWorkspace)
-                .map(workspaceMapper::toDomain)
-                .toList();
-    }
+  @Override
+  public List<Workspace> findWorkspacesByUserId(UUID userId) {
+    return workspaceUserJpaRepository.findByUserId(userId)
+        .stream()
+        .map(WorkspaceUserJpaEntity::getWorkspace)
+        .map(workspaceMapper::toDomain)
+        .toList();
+  }
 
-    @Override
-    public Optional<Workspace> findWorkspaceByNameOrSlug(String name, String slug) {
-        return workspaceJpaRepository.findByNameOrSlug(name, slug)
-            .map(workspaceMapper::toDomain);
-    }
+  @Override
+  public Optional<Workspace> findWorkspaceByNameOrSlug(String name, String slug) {
+    return workspaceJpaRepository.findByNameOrSlug(name, slug)
+        .map(workspaceMapper::toDomain);
+  }
 
-    @Override
-    public Optional<Workspace> findWorkspaceBySlugAndUserId(String slug, UUID userId) {
-        return workspaceUserJpaRepository.findBySlugAndUserId(slug, userId)
-            .map(WorkspaceUserJpaEntity::getWorkspace)
-            .map(workspaceMapper::toDomain);
-    }
+  @Override
+  public Optional<Workspace> findWorkspaceBySlugAndUserId(String slug, UUID userId) {
+    return workspaceUserJpaRepository.findBySlugAndUserId(slug, userId)
+        .map(WorkspaceUserJpaEntity::getWorkspace)
+        .map(workspaceMapper::toDomain);
+  }
 }

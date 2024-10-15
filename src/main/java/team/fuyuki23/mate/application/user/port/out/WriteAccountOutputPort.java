@@ -4,6 +4,6 @@ import team.fuyuki23.mate.domain.Account;
 
 public interface WriteAccountOutputPort {
 
-    Account writeAccount(Account account);
+  Account writeAccount(Account account);
 
 }

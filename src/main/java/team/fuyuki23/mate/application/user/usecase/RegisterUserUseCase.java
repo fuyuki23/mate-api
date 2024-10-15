@@ -4,17 +4,19 @@ public interface RegisterUserUseCase {
 
   Result register(Command command);
 
-    record Command(
-            String email,
-            String password,
-            String firstName,
-            String lastName
-    ) {
-    }
+  record Command(
+      String email,
+      String password,
+      String firstName,
+      String lastName
+  ) {
 
-    record Result(
-            boolean isRegistered
-    ) {
-    }
+  }
+
+  record Result(
+      boolean isRegistered
+  ) {
+
+  }
 
 }

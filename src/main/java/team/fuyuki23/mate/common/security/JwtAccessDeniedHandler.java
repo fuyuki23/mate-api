@@ -11,28 +11,29 @@ import team.fuyuki23.mate.common.exception.DefaultError;
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    public JwtAccessDeniedHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+  public JwtAccessDeniedHandler(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
+  @Override
+  public void handle(HttpServletRequest request, HttpServletResponse response,
+      AccessDeniedException accessDeniedException) {
 //        Logger.info(request != null ? request.getRequestURL().toString() : "Unknown URL",
 //            "access denied",
 //            accessDeniedException != null ? accessDeniedException.getMessage() : "No message");
 
-        try {
-            String responseBody = objectMapper.writeValueAsString(DefaultError.FORBIDDEN.toMap());
+    try {
+      String responseBody = objectMapper.writeValueAsString(DefaultError.FORBIDDEN.toMap());
 
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(DefaultError.FORBIDDEN.getStatus());
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(responseBody);
-        } catch (Exception e) {
-            // Handle any exceptions that occur during the response writing
-            e.printStackTrace();
-        }
+      response.setContentType("application/json;charset=UTF-8");
+      response.setStatus(DefaultError.FORBIDDEN.getStatus());
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(responseBody);
+    } catch (Exception e) {
+      // Handle any exceptions that occur during the response writing
+      e.printStackTrace();
     }
+  }
 }

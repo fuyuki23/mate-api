@@ -6,12 +6,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @SecurityScheme(
-        name = "jwt",
-        type = SecuritySchemeType.HTTP,
-        in = SecuritySchemeIn.HEADER,
-        bearerFormat = "JWT",
-        scheme = "bearer"
+    name = "jwt",
+    type = SecuritySchemeType.HTTP,
+    in = SecuritySchemeIn.HEADER,
+    bearerFormat = "JWT",
+    scheme = "bearer"
 )
 @Configuration
 public class SwaggerConfig {
+
 }

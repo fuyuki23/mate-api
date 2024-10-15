@@ -10,12 +10,12 @@ import team.fuyuki23.mate.domain.User;
 @RequiredArgsConstructor
 public class ValidateAuthnInputPort implements ValidateAuthnUseCase {
 
-    private final FindUserByIdOutputPort findUserByIdOutputPort;
+  private final FindUserByIdOutputPort findUserByIdOutputPort;
 
-    @Override
-    public Result validateAuthn(Command command) {
-        User user = findUserByIdOutputPort.findUserById(command.userId());
-        return new Result(user != null, user);
-    }
+  @Override
+  public Result validateAuthn(Command command) {
+    User user = findUserByIdOutputPort.findUserById(command.userId());
+    return new Result(user != null, user);
+  }
 
 }

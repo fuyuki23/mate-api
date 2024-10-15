@@ -59,7 +59,7 @@ public class SecurityConfig {
             request ->
                 request
                     .requestMatchers(HttpMethod.GET, "/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/login", "/users/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/users/login", "/users/register").permitAll()
                     .anyRequest().authenticated()
         )
         .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
