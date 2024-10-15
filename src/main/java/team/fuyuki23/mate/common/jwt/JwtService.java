@@ -34,7 +34,6 @@ public class JwtService {
 
     @PostConstruct
     void init() {
-        log.info("JwtService initialized");
         try {
             PEMParser privateParser = new PEMParser(new StringReader(jwtConfig.getPrivateKey()));
             PEMParser publicParser = new PEMParser(new StringReader(jwtConfig.getPublicKey()));

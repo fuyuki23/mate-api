@@ -28,7 +28,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     String email = jwtService.parseAccessToken(jwtAuthenticationToken.getToken());
     UserDetailsEntity user = (UserDetailsEntity) userDetailsService.loadUserByUsername(email);
 
-    // FIXME: use User record class not UserDetails
     return new JwtAuthenticationToken(user.user(), null, user.getAuthorities());
   }
 
