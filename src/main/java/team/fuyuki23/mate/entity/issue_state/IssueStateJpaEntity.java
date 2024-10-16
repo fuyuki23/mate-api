@@ -1,12 +1,11 @@
-package team.fuyuki23.mate.entity.issue;
+package team.fuyuki23.mate.entity.issue_state;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -16,27 +15,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import team.fuyuki23.mate.entity.common.BaseEntity;
-import team.fuyuki23.mate.entity.issue_state.IssueStateJpaEntity;
-import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 
-@Table(name = "issue")
+@Table(name = "state")
 @Entity
 @Getter
 @Builder
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class IssueJpaEntity extends BaseEntity {
+public class IssueStateJpaEntity extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(name = "workspace_id", columnDefinition = "binary(16)", nullable = false)
+  @Column(name = "workspace_id", columnDefinition = "binary", length = 16, nullable = false)
   private UUID workspaceId;
 
-  @Column(name = "sequence_id", columnDefinition = "bigint", nullable = false)
-  private Long sequenceId;
+  @Column(name = "project_id", columnDefinition = "binary", length = 16, nullable = false)
+  private UUID projectId;
+
+  @Column(name = "group", columnDefinition = "varchar", nullable = false)
+  @Convert(converter = IssueStateGroupConverter.class)
+  private IssueStateGroup group;
 
   @Column(name = "name", columnDefinition = "varchar", nullable = false)
   private String name;
@@ -44,19 +45,7 @@ public class IssueJpaEntity extends BaseEntity {
   @Column(name = "description", columnDefinition = "text")
   private String description;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "state_id")
-  @ToString.Exclude
-  private IssueStateJpaEntity state;
-
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "project_id")
-  @ToString.Exclude
-  private ProjectJpaEntity project;
-
-  @ManyToOne
-  @JoinColumn(name = "parent_id")
-  @ToString.Exclude
-  private IssueJpaEntity parent;
+  @Column(name = "color", columnDefinition = "varchar", length = 7, nullable = false)
+  private String color;
 
 }
