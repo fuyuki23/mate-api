@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import team.fuyuki23.mate.common.converter.IssueStateGroupConverter;
 import team.fuyuki23.mate.entity.common.BaseEntity;
 
 @Table(name = "state")

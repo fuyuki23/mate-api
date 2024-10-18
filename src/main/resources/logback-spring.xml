@@ -26,6 +26,6 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
-    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger level="INFO" name="org.springframework.web"/>
     <logger name="team.fuyuki23.mate" level="DEBUG"/>
 </configuration>

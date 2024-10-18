@@ -1,9 +1,10 @@
-package team.fuyuki23.mate.entity.issue_state;
+package team.fuyuki23.mate.common.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
+import team.fuyuki23.mate.entity.issue_state.IssueStateGroup;
 
 @Converter
 public class IssueStateGroupConverter implements AttributeConverter<IssueStateGroup, String> {
