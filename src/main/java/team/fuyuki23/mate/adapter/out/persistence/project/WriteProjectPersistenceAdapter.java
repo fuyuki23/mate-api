@@ -3,6 +3,7 @@ package team.fuyuki23.mate.adapter.out.persistence.project;
 import java.util.EnumSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.fuyuki23.mate.application.project.port.out.CreateDefaultIssueStateOutputPort;
 import team.fuyuki23.mate.application.project.port.out.CreateProjectOutputPort;
@@ -20,6 +21,7 @@ import team.fuyuki23.mate.entity.project.ProjectMapper;
 import team.fuyuki23.mate.entity.user.UserJpaEntity;
 import team.fuyuki23.mate.entity.workspace.WorkspaceJpaEntity;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class WriteProjectPersistenceAdapter implements CreateProjectOutputPort,
@@ -48,6 +50,7 @@ public class WriteProjectPersistenceAdapter implements CreateProjectOutputPort,
         issueStateGroup -> IssueStateJpaEntity.builder().group(issueStateGroup)
             .name(issueStateGroup.getGroup()).color(issueStateGroup.getColor())
             .workspaceId(project.workspace().id()).projectId(project.id()).build()).toList();
+    log.info("entities: {}", entities);
     issueStateJpaRepository.saveAll(entities);
 
     return entities.stream().map(issueStateMapper::toDomain).toList();

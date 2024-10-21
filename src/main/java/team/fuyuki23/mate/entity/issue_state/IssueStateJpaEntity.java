@@ -36,7 +36,7 @@ public class IssueStateJpaEntity extends BaseEntity {
   @Column(name = "project_id", columnDefinition = "binary", length = 16, nullable = false)
   private UUID projectId;
 
-  @Column(name = "group", columnDefinition = "varchar", nullable = false)
+  @Column(name = "\"group\"", columnDefinition = "varchar", nullable = false)
   @Convert(converter = IssueStateGroupConverter.class)
   private IssueStateGroup group;
 

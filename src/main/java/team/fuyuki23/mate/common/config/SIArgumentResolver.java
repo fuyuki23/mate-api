@@ -18,7 +18,7 @@ import team.fuyuki23.mate.domain.vo.SI;
 public class SIArgumentResolver implements HandlerMethodArgumentResolver {
 
   private final Pattern URI_PATTERN = Pattern.compile(
-      "^\\/workspaces\\/([a-z0-9_-]+)\\/projects\\/([A-Z0-9_-]+)");
+      "^\\/workspaces\\/([a-z0-9_-]+)\\/projects\\/([A-Z0-9_-]+).*");
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
@@ -38,7 +38,8 @@ public class SIArgumentResolver implements HandlerMethodArgumentResolver {
 
   private Optional<SI> validateURI(String uri) {
     Matcher matcher = URI_PATTERN.matcher(uri);
-
+    System.out.println("^\\/workspaces\\/([a-z0-9_-]+)\\/projects\\/([A-Z0-9_-]+).*");
+    System.out.println(uri);
     if (matcher.matches()) {
       return Optional.of(new SI(matcher.group(1), matcher.group(2)));
     } else {

@@ -1,5 +1,6 @@
 package team.fuyuki23.mate.application.project.port.in;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class CreateProjectInputPort implements CreateProjectUseCase {
   private final CreateDefaultIssueStateOutputPort createDefaultIssueStateOutputPort;
 
   @Override
+  @Transactional
   public Result createProject(Command command) {
     Member member = validateWorkspaceInputPort.validateWorkspace(
         new SlugAndUser(
