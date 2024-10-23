@@ -32,10 +32,9 @@ public class PrivateIssueRestAdapter {
       @Valid @RequestBody PrivateCreateIssueRequest payload,
       @AuthenticationPrincipal User user) {
     SI si = new SI(slug, identifier);
-    log.info("slug: {}, identifier: {}", si.slug(), si.identifier());
 
     createIssueUseCase.createIssue(
-        payload.toCommand(si)
+        payload.toCommand(si, user)
     );
     return null;
   }

@@ -27,7 +27,8 @@ public class IssueMapper {
         this.toDomain(issueJpaEntity.getParent()),
         issueJpaEntity.getCreatedAt(),
         issueJpaEntity.getUpdatedAt(),
-        projectMapper.toDomain(issueJpaEntity.getProject())
+        null
+//        projectMapper.toDomain(issueJpaEntity.getProject())
     );
   }
 

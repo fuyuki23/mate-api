@@ -16,7 +16,6 @@ import team.fuyuki23.mate.common.exception.ApiException;
 import team.fuyuki23.mate.domain.IssueState;
 import team.fuyuki23.mate.domain.Member;
 import team.fuyuki23.mate.domain.Project;
-import team.fuyuki23.mate.domain.vo.SlugAndUser;
 
 @Slf4j
 @Service
@@ -31,27 +30,17 @@ public class CreateProjectInputPort implements CreateProjectUseCase {
   @Override
   @Transactional
   public Result createProject(Command command) {
-    Member member = validateWorkspaceInputPort.validateWorkspace(
-        new SlugAndUser(
-            command.slug(),
-            command.user().id()
-        )
-    );
+    Member member = validateWorkspaceInputPort.validateWorkspace(command.slug(),
+        command.user().id());
 
     Optional<Project> maybeProject = findProjectByIdentifierInWorkspaceOutputPort.findProjectByIdentifierInWorkspace(
-        command.identifier(), member.workspace()
-            .id());
+        command.identifier(), member.workspace().id());
     if (maybeProject.isPresent()) {
       throw new ApiException(ProjectError.ALREADY_EXISTS);
     }
 
-    Project createdProject = createProjectOutputPort.createProject(
-        command.name(),
-        command.identifier(),
-        command.description(),
-        member.workspace(),
-        member.user()
-    );
+    Project createdProject = createProjectOutputPort.createProject(command.name(),
+        command.identifier(), command.description(), member.workspace(), member.user());
     log.info("created project: {}", createdProject);
 
     List<IssueState> issueStates = createDefaultIssueStateOutputPort.createDefaultIssueState(

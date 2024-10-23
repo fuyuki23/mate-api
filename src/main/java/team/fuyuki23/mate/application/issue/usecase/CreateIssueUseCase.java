@@ -1,16 +1,18 @@
 package team.fuyuki23.mate.application.issue.usecase;
 
+import java.util.UUID;
+import team.fuyuki23.mate.domain.User;
 import team.fuyuki23.mate.domain.vo.SI;
 
 public interface CreateIssueUseCase {
 
   Result createIssue(Command command);
 
-  record Command(SI si, String title, String description) {
+  record Command(SI si, String title, String description, User requester) {
 
   }
 
-  record Result(String id) {
+  record Result(UUID id) {
 
   }
 

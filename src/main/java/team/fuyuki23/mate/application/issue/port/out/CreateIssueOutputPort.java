@@ -2,6 +2,7 @@ package team.fuyuki23.mate.application.issue.port.out;
 
 import team.fuyuki23.mate.domain.Issue;
 import team.fuyuki23.mate.domain.Project;
+import team.fuyuki23.mate.domain.User;
 import team.fuyuki23.mate.domain.Workspace;
 
 public interface CreateIssueOutputPort {
@@ -11,6 +12,6 @@ public interface CreateIssueOutputPort {
       String description,
       Workspace workspace,
       Project project,
-      String user);
+      User user);
 
 }

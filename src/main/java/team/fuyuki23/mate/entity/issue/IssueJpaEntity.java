@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import team.fuyuki23.mate.entity.common.BaseEntity;
 import team.fuyuki23.mate.entity.issue_state.IssueStateJpaEntity;
-import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 
 @Table(name = "issue")
 @Entity
@@ -35,6 +34,9 @@ public class IssueJpaEntity extends BaseEntity {
   @Column(name = "workspace_id", columnDefinition = "binary(16)", nullable = false)
   private UUID workspaceId;
 
+  @Column(name = "project_id", columnDefinition = "binary(16)", nullable = false)
+  private UUID projectId;
+
   @Column(name = "sequence_id", columnDefinition = "bigint", nullable = false)
   private Long sequenceId;
 
@@ -49,10 +51,10 @@ public class IssueJpaEntity extends BaseEntity {
   @ToString.Exclude
   private IssueStateJpaEntity state;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "project_id")
-  @ToString.Exclude
-  private ProjectJpaEntity project;
+//  @ManyToOne(optional = false)
+//  @JoinColumn(name = "project_id")
+//  @ToString.Exclude
+//  private ProjectJpaEntity project;
 
   @ManyToOne
   @JoinColumn(name = "parent_id")

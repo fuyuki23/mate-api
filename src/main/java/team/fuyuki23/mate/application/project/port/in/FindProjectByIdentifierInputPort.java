@@ -9,7 +9,6 @@ import team.fuyuki23.mate.application.project.usecase.FindProjectByIdentifierUse
 import team.fuyuki23.mate.common.exception.ApiException;
 import team.fuyuki23.mate.domain.Member;
 import team.fuyuki23.mate.domain.Project;
-import team.fuyuki23.mate.domain.vo.SlugAndUser;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +19,8 @@ public class FindProjectByIdentifierInputPort implements FindProjectByIdentifier
 
   @Override
   public Result findProjectByIdentifier(Command command) {
-    Member member = validateWorkspaceInputPort.validateWorkspace(
-        new SlugAndUser(command.slug(), command.user().id()));
+    Member member = validateWorkspaceInputPort.validateWorkspace(command.slug(),
+        command.user().id());
 
     Project project = findProjectByIdentifierInWorkspaceOutputPort.findProjectByIdentifierInWorkspace(
             command.identifier(), member.workspace().id())
