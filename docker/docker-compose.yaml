@@ -1,3 +1,5 @@
+name: mate
+
 services:
   database:
     image: mysql:8.0.39

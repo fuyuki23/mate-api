@@ -18,6 +18,10 @@ import team.fuyuki23.mate.entity.issue_state.IssueStateMapper;
 import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 import team.fuyuki23.mate.entity.project.ProjectJpaRepository;
 import team.fuyuki23.mate.entity.project.ProjectMapper;
+import team.fuyuki23.mate.entity.project_user.ProjectUserId;
+import team.fuyuki23.mate.entity.project_user.ProjectUserJpaEntity;
+import team.fuyuki23.mate.entity.project_user.ProjectUserJpaRepository;
+import team.fuyuki23.mate.entity.project_user.ProjectUserMapper;
 import team.fuyuki23.mate.entity.user.UserJpaEntity;
 import team.fuyuki23.mate.entity.workspace.WorkspaceJpaEntity;
 
@@ -30,6 +34,9 @@ public class WriteProjectPersistenceAdapter implements CreateProjectOutputPort,
   private final ProjectJpaRepository projectJpaRepository;
   private final ProjectMapper projectMapper;
 
+  private final ProjectUserJpaRepository projectUserJpaRepository;
+  private final ProjectUserMapper projectUserMapper;
+
   private final IssueStateJpaRepository issueStateJpaRepository;
   private final IssueStateMapper issueStateMapper;
 
@@ -40,6 +47,17 @@ public class WriteProjectPersistenceAdapter implements CreateProjectOutputPort,
         .description(description).workspace(WorkspaceJpaEntity.builder().id(workspace.id()).build())
         .leader(UserJpaEntity.builder().id(leader.id()).build()).build();
     projectEntity = projectJpaRepository.save(projectEntity);
+
+    projectUserJpaRepository.save(
+        ProjectUserJpaEntity
+            .builder().projectUserId(
+                new ProjectUserId(
+                    workspace.id(),
+                    projectEntity.getId(),
+                    leader.id()
+                )
+            ).role(100).build()
+    );
 
     return projectMapper.toDomain(projectEntity);
   }

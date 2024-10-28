@@ -3,6 +3,7 @@ package team.fuyuki23.mate.adapter.out.persistence.common;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.fuyuki23.mate.application.common.port.out.FindUserProjectOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserWorkspaceBySlugAndUserIdOutputPort;
@@ -22,6 +23,7 @@ import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserJpaEntity;
 import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserJpaRepository;
 import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserMapper;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ReadUserWorkspacePersistenceAdapter implements
@@ -57,6 +59,7 @@ public class ReadUserWorkspacePersistenceAdapter implements
   public Optional<ProjectUser> findUserProjectByIds(String slug, String identifier, UUID userId) {
     Optional<WorkspaceJpaEntity> maybeWorkspace = workspaceJpaRepository.findBySlug(slug);
     if (maybeWorkspace.isEmpty()) {
+      log.debug("Workspace not found: {}", slug);
       return Optional.empty();
     }
     WorkspaceJpaEntity workspace = maybeWorkspace.get();
@@ -68,6 +71,7 @@ public class ReadUserWorkspacePersistenceAdapter implements
         )
     );
     if (maybeWorkspaceUser.isEmpty()) {
+      log.debug("User not found in workspace: {}", userId);
       return Optional.empty();
     }
     WorkspaceUserJpaEntity workspaceUser = maybeWorkspaceUser.get();
@@ -75,6 +79,7 @@ public class ReadUserWorkspacePersistenceAdapter implements
     Optional<ProjectJpaEntity> maybeProject = projectJpaRepository.findByIdentifierAndWorkspaceId(
         identifier, workspace.getId());
     if (maybeProject.isEmpty()) {
+      log.debug("Project not found: {}", identifier);
       return Optional.empty();
     }
     ProjectJpaEntity project = maybeProject.get();
@@ -82,6 +87,10 @@ public class ReadUserWorkspacePersistenceAdapter implements
     Optional<ProjectUserJpaEntity> maybeProjectUser = projectUserJpaRepository.findByProjectUserId(
         new ProjectUserId(workspace.getId(), project.getId(), userId)
     );
+    if (maybeProjectUser.isEmpty()) {
+      log.debug("User not found in project: {}", userId);
+      return Optional.empty();
+    }
 
     return maybeProjectUser.map(projectUserMapper::toDomain);
   }

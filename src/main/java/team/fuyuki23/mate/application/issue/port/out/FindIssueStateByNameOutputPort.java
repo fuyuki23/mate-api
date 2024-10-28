@@ -6,6 +6,6 @@ import team.fuyuki23.mate.domain.IssueState;
 
 public interface FindIssueStateByNameOutputPort {
 
-  Optional<IssueState> findIssueStateByName(String name, UUID workspaceId);
+  Optional<IssueState> findIssueStateByName(String name, UUID workspaceId, UUID projectId);
 
 }
