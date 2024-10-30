@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.fuyuki23.mate.application.common.port.out.FindUserProjectOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserWorkspaceBySlugAndUserIdOutputPort;
+import team.fuyuki23.mate.application.common.port.out.FindWorkspaceBySlugOutputPort;
 import team.fuyuki23.mate.domain.Member;
+import team.fuyuki23.mate.domain.Workspace;
 import team.fuyuki23.mate.domain.ProjectUser;
 import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 import team.fuyuki23.mate.entity.project.ProjectJpaRepository;
@@ -27,8 +29,10 @@ import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserMapper;
 @Repository
 @RequiredArgsConstructor
 public class ReadUserWorkspacePersistenceAdapter implements
-    FindUserWorkspaceBySlugAndUserIdOutputPort,
-    FindUserProjectOutputPort {
+    FindUserWorkspaceBySlugAndUserIdOutputPort
+    , FindWorkspaceBySlugOutputPort
+    , FindUserWorkspaceBySlugAndUserIdOutputPort
+    , FindUserProjectOutputPort {
 
   private final WorkspaceJpaRepository workspaceJpaRepository;
   private final WorkspaceUserJpaRepository workspaceUserJpaRepository;
@@ -93,5 +97,11 @@ public class ReadUserWorkspacePersistenceAdapter implements
     }
 
     return maybeProjectUser.map(projectUserMapper::toDomain);
+  }
+
+  @Override
+  public Optional<Workspace> findWorkspaceBySlug(String slug, UUID userId) {
+    return workspaceUserJpaRepository.findBySlugAndUserId(slug, userId)
+        .map((it) -> workspaceMapper.toDomain(it.getWorkspace()));
   }
 }
