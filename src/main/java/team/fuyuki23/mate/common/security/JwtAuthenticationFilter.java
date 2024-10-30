@@ -23,6 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
         FilterChain chain) throws IOException, ServletException {
+        log.info("{}, {}, {}, {}, {}", req.getPathInfo(), req.getPathTranslated(),
+            req.getServletPath(), req.getRequestURI(), req.getRequestURL());
         String token = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7); // Remove "Bearer " prefix
@@ -33,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (AuthenticationException authenticationException) {
                 SecurityContextHolder.clearContext();
+//                throw authenticationException;
             }
         }
 

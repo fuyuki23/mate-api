@@ -3,6 +3,7 @@ package team.fuyuki23.mate.adapter.in.rest.project;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import team.fuyuki23.mate.application.project.usecase.FindProjectByIdentifierUse
 import team.fuyuki23.mate.application.project.usecase.FindProjectsByWorkspaceUseCase;
 import team.fuyuki23.mate.domain.User;
 
+@Slf4j
 @RestController
 @RequestMapping("/workspaces/{slug}/projects")
 @SecurityRequirement(name = "jwt")
@@ -30,7 +32,6 @@ public class PrivateProjectRestAdapter {
   @GetMapping
   public ResponseEntity<?> findProjectsByWorkspace(@PathVariable String slug,
       @AuthenticationPrincipal User user) {
-
     return ResponseEntity.ok().body(findProjectsByWorkspaceUseCase.findProjectsByWorkspace(
         new FindProjectsByWorkspaceUseCase.Command(slug, user)).projects());
   }
