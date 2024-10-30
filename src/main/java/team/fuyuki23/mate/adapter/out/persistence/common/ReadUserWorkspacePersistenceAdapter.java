@@ -9,8 +9,8 @@ import team.fuyuki23.mate.application.common.port.out.FindUserProjectOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserWorkspaceBySlugAndUserIdOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindWorkspaceBySlugOutputPort;
 import team.fuyuki23.mate.domain.Member;
-import team.fuyuki23.mate.domain.Workspace;
 import team.fuyuki23.mate.domain.ProjectUser;
+import team.fuyuki23.mate.domain.Workspace;
 import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 import team.fuyuki23.mate.entity.project.ProjectJpaRepository;
 import team.fuyuki23.mate.entity.project_user.ProjectUserId;
@@ -31,7 +31,6 @@ import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserMapper;
 public class ReadUserWorkspacePersistenceAdapter implements
     FindUserWorkspaceBySlugAndUserIdOutputPort
     , FindWorkspaceBySlugOutputPort
-    , FindUserWorkspaceBySlugAndUserIdOutputPort
     , FindUserProjectOutputPort {
 
   private final WorkspaceJpaRepository workspaceJpaRepository;

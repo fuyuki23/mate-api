@@ -6,6 +6,7 @@ import team.fuyuki23.mate.domain.Project;
 
 public interface FindProjectBySlugAndIdentifierOutputPort {
 
-  Optional<Project> findProjectBySlugAndIdentifier(String slug, String identifier, UUID userId);
+  Optional<Project> findProjectBySlugAndIdentifier(UUID workspaceId, String identifier,
+      UUID userId);
 
 }
