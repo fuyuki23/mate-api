@@ -2,6 +2,7 @@ package team.fuyuki23.mate.common.security;
 
 import java.io.Serial;
 import java.util.Collection;
+import java.util.UUID;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,19 +13,17 @@ public class WPUAuthenticationToken extends AbstractAuthenticationToken {
   private static final long serialVersionUID = 7505864692761194418L;
 
   private String _token;
-  private String _slug;
-  private String _identifier;
+  private UUID _workspaceId;
 
   @Getter
   private Object principal;
   @Getter
   private Object credentials;
 
-  public WPUAuthenticationToken(String token, String slug, String identifier) {
+  public WPUAuthenticationToken(String token, UUID workspaceId) {
     super(null);
     this._token = token;
-    this._slug = slug;
-    this._identifier = identifier;
+    this._workspaceId = workspaceId;
     this.setAuthenticated(false);
   }
 
@@ -40,12 +39,8 @@ public class WPUAuthenticationToken extends AbstractAuthenticationToken {
     return this._token;
   }
 
-  public String getSlug() {
-    return this._slug;
-  }
-
-  public String getIdentifier() {
-    return this._identifier;
+  public UUID getWorkspaceId() {
+    return this._workspaceId;
   }
 
 }

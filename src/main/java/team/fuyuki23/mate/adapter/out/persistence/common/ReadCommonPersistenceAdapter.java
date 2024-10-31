@@ -5,14 +5,17 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import team.fuyuki23.mate.application.common.port.out.FindProjectBySlugAndIdentifierOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserProjectOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserWorkspaceBySlugAndUserIdOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindWorkspaceBySlugOutputPort;
 import team.fuyuki23.mate.domain.Member;
+import team.fuyuki23.mate.domain.Project;
 import team.fuyuki23.mate.domain.ProjectUser;
 import team.fuyuki23.mate.domain.Workspace;
 import team.fuyuki23.mate.entity.project.ProjectJpaEntity;
 import team.fuyuki23.mate.entity.project.ProjectJpaRepository;
+import team.fuyuki23.mate.entity.project.ProjectMapper;
 import team.fuyuki23.mate.entity.project_user.ProjectUserId;
 import team.fuyuki23.mate.entity.project_user.ProjectUserJpaEntity;
 import team.fuyuki23.mate.entity.project_user.ProjectUserJpaRepository;
@@ -28,10 +31,11 @@ import team.fuyuki23.mate.entity.workspace_user.WorkspaceUserMapper;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class ReadUserWorkspacePersistenceAdapter implements
+public class ReadCommonPersistenceAdapter implements
     FindUserWorkspaceBySlugAndUserIdOutputPort
     , FindWorkspaceBySlugOutputPort
-    , FindUserProjectOutputPort {
+    , FindUserProjectOutputPort
+    , FindProjectBySlugAndIdentifierOutputPort {
 
   private final WorkspaceJpaRepository workspaceJpaRepository;
   private final WorkspaceUserJpaRepository workspaceUserJpaRepository;
@@ -40,6 +44,7 @@ public class ReadUserWorkspacePersistenceAdapter implements
   private final ProjectJpaRepository projectJpaRepository;
   private final ProjectUserJpaRepository projectUserJpaRepository;
   private final ProjectUserMapper projectUserMapper;
+  private final ProjectMapper projectMapper;
 
   @Override
   public Optional<Member> findUserWorkspaceBySlugAndUserId(String slug, UUID userId) {
@@ -102,5 +107,15 @@ public class ReadUserWorkspacePersistenceAdapter implements
   public Optional<Workspace> findWorkspaceBySlug(String slug, UUID userId) {
     return workspaceUserJpaRepository.findBySlugAndUserId(slug, userId)
         .map((it) -> workspaceMapper.toDomain(it.getWorkspace()));
+  }
+
+  @Override
+  public Optional<Project> findProjectBySlugAndIdentifier(UUID workspaceId, String identifier,
+      UUID userId) {
+    Optional<ProjectUserJpaEntity> projectUser = projectUserJpaRepository.findByWorkspaceIdAndIdentifierAndUserId(
+        workspaceId, identifier, userId);
+
+    return projectUser
+        .map((it) -> projectMapper.toDomain(it.getProject()));
   }
 }

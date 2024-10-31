@@ -16,7 +16,7 @@ import team.fuyuki23.mate.adapter.in.rest.project.dto.PrivateCreateProjectReques
 import team.fuyuki23.mate.application.project.usecase.CreateProjectUseCase;
 import team.fuyuki23.mate.application.project.usecase.FindProjectByIdentifierUseCase;
 import team.fuyuki23.mate.application.project.usecase.FindProjectsByWorkspaceUseCase;
-import team.fuyuki23.mate.domain.User;
+import team.fuyuki23.mate.domain.vo.WPU;
 
 @Slf4j
 @RestController
@@ -31,20 +31,21 @@ public class PrivateProjectRestAdapter {
 
   @GetMapping
   public ResponseEntity<?> findProjectsByWorkspace(@PathVariable String slug,
-      @AuthenticationPrincipal User user) {
+      @AuthenticationPrincipal WPU wpu) {
+    log.debug("{}", wpu);
     return ResponseEntity.ok().body(findProjectsByWorkspaceUseCase.findProjectsByWorkspace(
-        new FindProjectsByWorkspaceUseCase.Command(slug, user)).projects());
+        new FindProjectsByWorkspaceUseCase.Command(slug, wpu.user())).projects());
   }
 
   @PostMapping
   public ResponseEntity<?> createProject(
       @PathVariable String slug,
       @Valid @RequestBody PrivateCreateProjectRequest payload,
-      @AuthenticationPrincipal User user
+      @AuthenticationPrincipal WPU wpu
   ) {
     return ResponseEntity.status(201).body(
         createProjectUseCase.createProject(
-            payload.toCommand(slug, user)
+            payload.toCommand(slug, wpu.user())
         )
     );
   }
@@ -53,11 +54,12 @@ public class PrivateProjectRestAdapter {
   public ResponseEntity<?> findProjectByIdentifier(
       @PathVariable String slug,
       @PathVariable String identifier,
-      @AuthenticationPrincipal User user
+      @AuthenticationPrincipal WPU wpu
   ) {
+    log.debug("{}", wpu);
     return ResponseEntity.ok().body(
         findProjectByIdentifierUseCase.findProjectByIdentifier(
-            new FindProjectByIdentifierUseCase.Command(slug, identifier, user)
+            new FindProjectByIdentifierUseCase.Command(slug, identifier, wpu.user())
         ).project()
     );
   }

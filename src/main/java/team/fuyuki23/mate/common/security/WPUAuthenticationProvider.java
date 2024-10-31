@@ -30,6 +30,7 @@ public class WPUAuthenticationProvider implements AuthenticationProvider {
     WPUAuthenticationToken wpuAuthenticationToken = (WPUAuthenticationToken) authentication;
     String email = jwtService.parseAccessToken(wpuAuthenticationToken.getToken());
     UserDetailsEntity user = (UserDetailsEntity) userDetailsService.loadUserByUsername(email);
+    // FIXME: change to validate workspace user and it should contain the accessible projects
     WPU wpu = validateWPUUseCase.validateWPU(
         new Command(wpuAuthenticationToken.getSlug(), wpuAuthenticationToken.getIdentifier(),
             user.user())).wpu();

@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import team.fuyuki23.mate.application.common.usecase.ValidateWPUUseCase;
 import team.fuyuki23.mate.common.jwt.JwtService;
 
 @Configuration
@@ -25,14 +26,18 @@ public class SecurityConfig {
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtAuthenticationProvider jwtAuthenticationProvider;
+  private final WPUAuthenticationProvider wpuAuthenticationProvider;
 
   SecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler,
       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
       JwtService jwtService,
-      UserDetailsService userDetailsService) {
+      UserDetailsService userDetailsService,
+      ValidateWPUUseCase validateWPUUseCase) {
     this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     this.jwtAuthenticationProvider = new JwtAuthenticationProvider(jwtService, userDetailsService);
+    this.wpuAuthenticationProvider = new WPUAuthenticationProvider(jwtService, userDetailsService,
+        validateWPUUseCase);
   }
 
   public CorsConfigurationSource corsConfigurationSource() {
@@ -64,6 +69,8 @@ public class SecurityConfig {
         )
         .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), LogoutFilter.class)
+        .addFilterBefore(new WPUAuthenticationFilter(authenticationManager),
+            JwtAuthenticationFilter.class)
         .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
             httpSecurityExceptionHandlingConfigurer
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -79,6 +86,7 @@ public class SecurityConfig {
         AuthenticationManagerBuilder.class);
     // TODO: JWT 확인 후 접속 할 Workspace 를 확인하는 AuthenticationProvider 도 만들 수 있을듯?
     authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
+    authenticationManagerBuilder.authenticationProvider(wpuAuthenticationProvider);
     return authenticationManagerBuilder.build();
   }
 

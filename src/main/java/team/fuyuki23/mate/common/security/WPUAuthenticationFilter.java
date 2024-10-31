@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.regex.Matcher;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,24 +20,32 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class WPUAuthenticationFilter extends OncePerRequestFilter {
 
   private final AuthenticationManager authenticationManager;
-  private final Pattern pattern = Pattern.compile(
+  private final Pattern project = Pattern.compile(
       "^\\/workspaces\\/([a-z0-9_-]+)\\/projects\\/([A-Z0-9_-]+).*");
+  private final Pattern workspace = Pattern.compile(
+      "^\\/workspaces\\/([a-z0-9_-]+).*");
+
+  private final String WORKSPACE_HEADER_NAME = "x-workspace-id";
 
   @Override
   protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
       FilterChain chain) throws ServletException, IOException {
     log.debug("WPU authentication filter");
-    WPUAuthenticationToken authenticationToken = createWPUAuthenticationToken(req);
-    if (authenticationToken != null) {
-      log.debug("WPU authentication token found");
-      try {
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.debug("WPU authentication successful");
-      } catch (Exception e) {
-        log.error("Error authenticating token", e);
-        SecurityContextHolder.clearContext();
+    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+      WPUAuthenticationToken authenticationToken = createWPUAuthenticationToken(req);
+      if (authenticationToken != null) {
+        log.debug("WPU authentication token found");
+        try {
+          Authentication authentication = authenticationManager.authenticate(authenticationToken);
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+          log.debug("WPU authentication successful");
+        } catch (Exception e) {
+          log.error("Error authenticating token", e);
+          SecurityContextHolder.clearContext();
+        }
       }
+    } else {
+      log.debug("[WPU] authentication token already exists");
     }
 
     chain.doFilter(req, res);
@@ -48,14 +56,25 @@ public class WPUAuthenticationFilter extends OncePerRequestFilter {
     if (token == null || !token.startsWith("Bearer ")) {
       return null;
     }
-    String uri = req.getServletPath();
-    Matcher matcher = this.pattern.matcher(uri);
-    if (matcher.matches()) {
-      String slug = matcher.group(1);
-      String identifier = matcher.group(2);
-      return new WPUAuthenticationToken(token, slug, identifier);
+    token = token.substring(7);
+//    String uri = req.getServletPath();
+    try {
+      UUID workspaceId = UUID.fromString(req.getHeader(this.WORKSPACE_HEADER_NAME));
+      return new WPUAuthenticationToken(token, workspaceId);
+    } catch (IllegalArgumentException e) {
+      return new WPUAuthenticationToken(token, null);
     }
-
-    return null;
+//    Matcher projectMatcher = this.project.matcher(uri);
+//    Matcher workspaceMatcher = this.workspace.matcher(uri);
+//    if (projectMatcher.matches()) {
+//      String slug = projectMatcher.group(1);
+//      String identifier = projectMatcher.group(2);
+//      return new WPUAuthenticationToken(token, slug, Optional.of(identifier));
+//    } else if (workspaceMatcher.matches()) {
+//      String slug = workspaceMatcher.group(1);
+//      return new WPUAuthenticationToken(token, slug, Optional.empty());
+//    }
+//
+//    return null;
   }
 }

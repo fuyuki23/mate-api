@@ -25,6 +25,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) {
     try {
+      log.debug("JwtAuthenticationProvider");
       JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
       String email = jwtService.parseAccessToken(jwtAuthenticationToken.getToken());
       UserDetailsEntity user = (UserDetailsEntity) userDetailsService.loadUserByUsername(email);

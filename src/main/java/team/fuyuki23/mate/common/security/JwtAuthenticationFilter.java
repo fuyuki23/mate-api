@@ -23,20 +23,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
         FilterChain chain) throws IOException, ServletException {
-        log.info("{}, {}, {}, {}, {}", req.getPathInfo(), req.getPathTranslated(),
-            req.getServletPath(), req.getRequestURI(), req.getRequestURL());
-        String token = req.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remove "Bearer " prefix
-            try {
-                Authentication authenticationToken = new JwtAuthenticationToken(token);
-                Authentication authentication = authenticationManager.authenticate(
-                    authenticationToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (AuthenticationException authenticationException) {
-                SecurityContextHolder.clearContext();
+        log.debug("JWT authentication filter");
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            String token = req.getHeader(HttpHeaders.AUTHORIZATION);
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7); // Remove "Bearer " prefix
+                try {
+                    Authentication authenticationToken = new JwtAuthenticationToken(token);
+                    Authentication authentication = authenticationManager.authenticate(
+                        authenticationToken);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (AuthenticationException authenticationException) {
+                    SecurityContextHolder.clearContext();
 //                throw authenticationException;
+                }
             }
+        } else {
+            log.debug("[JWT] authentication token already exists");
         }
 
         chain.doFilter(req, res);
