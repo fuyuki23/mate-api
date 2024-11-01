@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team.fuyuki23.mate.application.member.usecase.FindMembersByWorkspaceUseCase;
-import team.fuyuki23.mate.domain.User;
+import team.fuyuki23.mate.domain.vo.WPU;
 
 @RestController
 @RequestMapping("/workspaces/{slug}/members")
@@ -22,13 +22,13 @@ public class PrivateMemberRestAdapter {
   @GetMapping
   public ResponseEntity<?> findMembersByWorkspace(
       @PathVariable String slug,
-      @AuthenticationPrincipal User user
+      @AuthenticationPrincipal WPU wpu
   ) {
     return ResponseEntity.ok().body(
         findMembersByWorkspaceUseCase.findMembersByWorkspace(
             new FindMembersByWorkspaceUseCase.Command(
                 slug,
-                user
+                wpu.user()
             )
         ).members()
     );

@@ -7,7 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import team.fuyuki23.mate.domain.User;
+import team.fuyuki23.mate.domain.vo.WPU;
 
 @Slf4j
 @RestController
@@ -17,9 +17,9 @@ public class PrivateUserRestAdapter {
 
     @GetMapping("/me")
     public ResponseEntity<?> findMyInfo(
-        @AuthenticationPrincipal User user
+        @AuthenticationPrincipal WPU wpu
     ) {
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(wpu.user());
     }
 
 }

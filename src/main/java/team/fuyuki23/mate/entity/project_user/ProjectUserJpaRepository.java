@@ -1,5 +1,6 @@
 package team.fuyuki23.mate.entity.project_user;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,8 @@ public interface ProjectUserJpaRepository extends
   @Query("select pu from ProjectUserJpaEntity pu inner join fetch pu.workspace inner join fetch pu.project inner join pu.user where pu.projectUserId.workspaceId = :workspaceId and pu.project.identifier = :identifier and pu.projectUserId.userId = :userId")
   Optional<ProjectUserJpaEntity> findByWorkspaceIdAndIdentifierAndUserId(UUID workspaceId,
       String identifier, UUID userId);
+
+  @Query("select pu from ProjectUserJpaEntity pu inner join fetch pu.workspace inner join fetch pu.project inner join pu.user where pu.workspace.id = :workspaceId and  pu.projectUserId.userId = :userId")
+  List<ProjectUserJpaEntity> findAllByWorkspaceId(UUID workspaceId, UUID userId);
 
 }

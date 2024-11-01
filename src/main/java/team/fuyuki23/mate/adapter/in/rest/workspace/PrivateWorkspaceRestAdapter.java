@@ -3,6 +3,7 @@ package team.fuyuki23.mate.adapter.in.rest.workspace;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,11 +17,13 @@ import team.fuyuki23.mate.adapter.in.rest.workspace.dto.PrivateWorkspaceRequest;
 import team.fuyuki23.mate.application.workspace.usecase.CreateWorkspaceUseCase;
 import team.fuyuki23.mate.application.workspace.usecase.FindWorkspaceBySlugUseCase;
 import team.fuyuki23.mate.application.workspace.usecase.FindWorkspacesByUserUseCase;
-import team.fuyuki23.mate.domain.User;
+import team.fuyuki23.mate.domain.vo.WPU;
 
+@Slf4j
 @RestController
 @RequestMapping("/workspaces")
 @SecurityRequirement(name = "jwt")
+@SecurityRequirement(name = "x-workspace-id")
 @RequiredArgsConstructor
 public class PrivateWorkspaceRestAdapter {
 
@@ -30,30 +33,31 @@ public class PrivateWorkspaceRestAdapter {
 
   @GetMapping
   public ResponseEntity<?> findWorkspacesByUser(
-      @AuthenticationPrincipal User user
+      @AuthenticationPrincipal WPU wpu
   ) {
     return ResponseEntity.ok(findWorkspacesByUserUseCase.findWorkspacesByUser(
-        new FindWorkspacesByUserUseCase.Command(user)
+        new FindWorkspacesByUserUseCase.Command(wpu.user())
     ).workspaces());
-  }
-
-  @GetMapping("/{slug}")
-  public ResponseEntity<?> FindWorkspaceBySlug(
-      @PathVariable String slug,
-      @AuthenticationPrincipal User user
-  ) {
-    return ResponseEntity.ok(findWorkspaceBySlugUseCase.findWorkspaceBySlug(
-        new FindWorkspaceBySlugUseCase.Command(slug, user)
-    ).workspace());
   }
 
   @PostMapping
   public ResponseEntity<?> createWorkspace(
       @RequestBody @Valid PrivateWorkspaceRequest.CreateDto payload,
-      @AuthenticationPrincipal User user
+      @AuthenticationPrincipal WPU wpu
   ) {
     return ResponseEntity.status(HttpStatus.CREATED.value()).body(createWorkspaceUseCase.create(
-        payload.toCommand(user)
+        payload.toCommand(wpu.user())
+    ).workspace());
+  }
+
+  @GetMapping("/{slug}")
+  public ResponseEntity<?> FindWorkspaceBySlug(
+      @PathVariable String slug,
+      @AuthenticationPrincipal WPU wpu
+  ) {
+    log.debug("wpu: {}", wpu);
+    return ResponseEntity.ok(findWorkspaceBySlugUseCase.findWorkspaceBySlug(
+        new FindWorkspaceBySlugUseCase.Command(slug, wpu.user())
     ).workspace());
   }
 

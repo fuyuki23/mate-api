@@ -1,12 +1,15 @@
 package team.fuyuki23.mate.common.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +21,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import team.fuyuki23.mate.application.common.usecase.ValidateWPUUseCase;
+import team.fuyuki23.mate.common.config.AccessLoggingFilter;
 import team.fuyuki23.mate.common.jwt.JwtService;
 
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 @Configuration
 public class SecurityConfig {
 
@@ -68,9 +74,12 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
         )
         .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), LogoutFilter.class)
+//        .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), LogoutFilter.class)
         .addFilterBefore(new WPUAuthenticationFilter(authenticationManager),
-            JwtAuthenticationFilter.class)
+            LogoutFilter.class)
+        .addFilterBefore(new AuthenticationExceptionHandlerFilter(new ObjectMapper()),
+            WPUAuthenticationFilter.class)
+        .addFilterBefore(new AccessLoggingFilter(), AuthenticationExceptionHandlerFilter.class)
         .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
             httpSecurityExceptionHandlingConfigurer
                 .accessDeniedHandler(jwtAccessDeniedHandler)

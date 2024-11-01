@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +25,7 @@ public class WPUAuthenticationFilter extends OncePerRequestFilter {
   private final Pattern project = Pattern.compile(
       "^\\/workspaces\\/([a-z0-9_-]+)\\/projects\\/([A-Z0-9_-]+).*");
   private final Pattern workspace = Pattern.compile(
-      "^\\/workspaces\\/([a-z0-9_-]+).*");
+      "^\\/workspaces\\/([a-zA-Z0-9_-]+).*");
 
   private final String WORKSPACE_HEADER_NAME = "x-workspace-id";
 
@@ -39,7 +41,7 @@ public class WPUAuthenticationFilter extends OncePerRequestFilter {
           Authentication authentication = authenticationManager.authenticate(authenticationToken);
           SecurityContextHolder.getContext().setAuthentication(authentication);
           log.debug("WPU authentication successful");
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
           log.error("Error authenticating token", e);
           SecurityContextHolder.clearContext();
         }
@@ -59,11 +61,23 @@ public class WPUAuthenticationFilter extends OncePerRequestFilter {
     token = token.substring(7);
 //    String uri = req.getServletPath();
     try {
-      UUID workspaceId = UUID.fromString(req.getHeader(this.WORKSPACE_HEADER_NAME));
-      return new WPUAuthenticationToken(token, workspaceId);
-    } catch (IllegalArgumentException e) {
+      String selectedWorkspaceId = req.getHeader(this.WORKSPACE_HEADER_NAME);
+      if (selectedWorkspaceId != null || selectedWorkspaceId.isBlank()) {
+        UUID workspaceId = UUID.fromString(req.getHeader(this.WORKSPACE_HEADER_NAME));
+        return new WPUAuthenticationToken(token, workspaceId);
+      } else {
+        String uri = req.getServletPath();
+        Matcher workspaceMatcher = this.workspace.matcher(uri);
+        if (workspaceMatcher.matches()) {
+          UUID workspaceId = UUID.fromString(workspaceMatcher.group(1));
+          return new WPUAuthenticationToken(token, workspaceId);
+        }
+      }
+    } catch (IllegalArgumentException | NullPointerException e) {
       return new WPUAuthenticationToken(token, null);
     }
+
+    return null;
 //    Matcher projectMatcher = this.project.matcher(uri);
 //    Matcher workspaceMatcher = this.workspace.matcher(uri);
 //    if (projectMatcher.matches()) {

@@ -1,13 +1,16 @@
 package team.fuyuki23.mate.adapter.out.persistence.common;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.fuyuki23.mate.application.common.port.out.FindProjectBySlugAndIdentifierOutputPort;
+import team.fuyuki23.mate.application.common.port.out.FindProjectUsersByWorkspaceIdOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserProjectOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindUserWorkspaceBySlugAndUserIdOutputPort;
+import team.fuyuki23.mate.application.common.port.out.FindWorkspaceByIdOutputPort;
 import team.fuyuki23.mate.application.common.port.out.FindWorkspaceBySlugOutputPort;
 import team.fuyuki23.mate.domain.Member;
 import team.fuyuki23.mate.domain.Project;
@@ -35,7 +38,9 @@ public class ReadCommonPersistenceAdapter implements
     FindUserWorkspaceBySlugAndUserIdOutputPort
     , FindWorkspaceBySlugOutputPort
     , FindUserProjectOutputPort
-    , FindProjectBySlugAndIdentifierOutputPort {
+    , FindProjectBySlugAndIdentifierOutputPort
+    , FindWorkspaceByIdOutputPort
+    , FindProjectUsersByWorkspaceIdOutputPort {
 
   private final WorkspaceJpaRepository workspaceJpaRepository;
   private final WorkspaceUserJpaRepository workspaceUserJpaRepository;
@@ -117,5 +122,23 @@ public class ReadCommonPersistenceAdapter implements
 
     return projectUser
         .map((it) -> projectMapper.toDomain(it.getProject()));
+  }
+
+  @Override
+  public Optional<Workspace> findWorkspaceById(UUID id, UUID userId) {
+    return workspaceUserJpaRepository.findByWorkspaceUserId(
+            new WorkspaceUserId(id, userId)
+        )
+        .map(WorkspaceUserJpaEntity::getWorkspace)
+        .map(workspaceMapper::toDomain);
+  }
+
+  @Override
+  public List<ProjectUser> findProjectUsersByWorkspaceId(UUID workspaceId, UUID userId) {
+    return projectUserJpaRepository
+        .findAllByWorkspaceId(workspaceId, userId)
+        .stream()
+        .map(projectUserMapper::toDomain)
+        .toList();
   }
 }

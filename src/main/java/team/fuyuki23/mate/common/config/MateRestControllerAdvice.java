@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +39,11 @@ public class MateRestControllerAdvice {
   @ExceptionHandler(NoResourceFoundException.class)
   public ResponseEntity<?> noResourceFoundException(NoResourceFoundException e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DefaultError.NOT_FOUND.toMap());
+  }
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<?> authorizationDeniedException(AuthorizationDeniedException e) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(DefaultError.FORBIDDEN.toMap());
   }
 
   @ExceptionHandler(ApiException.class)

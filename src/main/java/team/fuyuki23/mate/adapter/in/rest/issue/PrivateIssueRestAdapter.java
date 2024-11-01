@@ -21,6 +21,7 @@ import team.fuyuki23.mate.adapter.in.rest.issue.dto.PrivateFindIssuesRequest;
 import team.fuyuki23.mate.application.issue.usecase.CreateIssueUseCase;
 import team.fuyuki23.mate.domain.User;
 import team.fuyuki23.mate.domain.vo.SI;
+import team.fuyuki23.mate.domain.vo.WPU;
 
 @Slf4j
 @RestController
@@ -47,7 +48,7 @@ public class PrivateIssueRestAdapter {
       @PathVariable String slug,
       @PathVariable String identifier,
       @RequestParam PrivateFindIssuesRequest payload,
-      @AuthenticationPrincipal User user) {
+      @AuthenticationPrincipal WPU wpu) {
     return ResponseEntity.ok().build();
   }
 
